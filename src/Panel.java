@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
+import static java.awt.event.KeyEvent.VK_SPACE;
 
 
 /**
@@ -10,7 +10,11 @@ import java.awt.event.KeyListener;
 
 public class Panel extends JPanel {
 
+    Stick stick;
+
     public Panel() {
+
+        stick = new Stick(200, 500);
 
         addKeyListener(new KeyListener() {
             @Override
@@ -21,10 +25,49 @@ public class Panel extends JPanel {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
 
+                if(keyEvent.getKeyCode() == 32){
+                    stick.grow();
+                    repaint();
+                }
+
             }
 
             @Override
             public void keyReleased(KeyEvent keyEvent) {
+
+            }
+        });
+
+        Timer timer = new Timer(40, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                repaint();
+            }
+        });
+
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                System.out.println(mouseEvent.getX() + ", " + mouseEvent.getY());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
 
             }
         });
@@ -34,7 +77,6 @@ public class Panel extends JPanel {
     public void paint(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
 
-        Stick stick = new Stick(200, 500);
         stick.draw(g2, 0, 0);
     }
 

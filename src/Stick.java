@@ -12,7 +12,7 @@ public class Stick {
 
     public Stick(int x, int y){
         begin = new Point(x, y);
-        height = 100;
+        height = 0;
         color = new Color(45, 22, 24);
     }
 
@@ -38,6 +38,10 @@ public class Stick {
             g2.setTransform(orig);
         }
 
+    }
+
+    public void grow(){
+        height += 3;
     }
 
 }
