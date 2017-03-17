@@ -41,7 +41,7 @@ public class Stick {
     }
 
     public void grow(){
-        height += 3;
+        height += 5;
     }
 
 }

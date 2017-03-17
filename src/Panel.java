@@ -12,6 +12,8 @@ public class Panel extends JPanel {
 
     Stick stick;
 
+    Timer timer;
+
     public Panel() {
 
         stick = new Stick(200, 500);
@@ -38,7 +40,7 @@ public class Panel extends JPanel {
             }
         });
 
-        Timer timer = new Timer(40, new ActionListener() {
+        timer = new Timer(40, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 repaint();
@@ -75,9 +77,14 @@ public class Panel extends JPanel {
     }
 
     public void paint(Graphics g) {
+        super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
         stick.draw(g2, 0, 0);
+
+        Pillar pillar = new Pillar(50, 500, (int) (Math.random() * 130 + 15), 500);
+        pillar.draw(g2);
+
     }
 
 }

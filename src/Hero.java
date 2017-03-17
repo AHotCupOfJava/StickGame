@@ -12,7 +12,7 @@ public class Hero {
         y = yy;
     }
 
-    public void draw(Graphics2D g2){
+    public void draw(Graphics2D g2) {
         g2.setColor(Color.BLACK);
         g2.drawRect(x, y, 30, 50);
     }
