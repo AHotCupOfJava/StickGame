@@ -71,10 +71,10 @@ public class Panel extends JPanel {
                 }
                 if(fall){
                     stickAngle += 10;
-                    if(stickAngle == 0){
-                        fall = false;
-                        walk = true;
-                    }
+//                    if(stickAngle == 0){
+//                        fall = false;
+//                        walk = true;
+//                    }
                 }
                 if(walk){
                     hero.setX((int)hero.getX() + 10);
@@ -140,6 +140,8 @@ public class Panel extends JPanel {
         if(move){
             stick.draw(g2, 1, 0);
         }
+
+        hero.draw(g2);
 
 
         Pillar pillar = new Pillar(50, 500, (int) (Math.random() * 130 + 15), 500);

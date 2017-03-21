@@ -1,5 +1,7 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -20,17 +22,27 @@ public class Hero {
 
         loc = new Point(x, y);
         dir = direction;
-        setPic("blank.png", NORTH);
+        setPic("Hero.png", NORTH);
         speed = 5;
 
         id = nextID;
         nextID++;
     }
 
-//    public void draw(Graphics2D g2){
-//        g2.setColor(Color.BLACK);
-//        g2.fillRect(loc.x, loc.y, getPic().getWidth(), getPic().getHeight());
-//    }
+    /**
+     * This draws the image pic at the Point loc, rotated to face dir.
+     */
+    public void draw(Graphics2D g2) {
+        double rotationRequired = Math.toRadians(picOrientation - dir);
+        double locationX = pic.getWidth() / 2;
+        double locationY = pic.getHeight() / 2;
+        AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+//        g2.rotate(rotationRequired, loc.x+locationX, loc.y+locationY);
+        g2.drawImage(op.filter(pic, null), loc.x, loc.y, null);
+//        g2.drawImage(pic, loc.x, loc.y, null);
+//        g2.rotate(-rotationRequired, loc.x+locationX, loc.y+locationY);
+    }
 
     /**
      * Changes the image file that this Sprite uses to draw.
