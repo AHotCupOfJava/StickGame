@@ -8,8 +8,6 @@ import java.io.File;
  */
 public class Hero {
 
-    private int x, y;
-
     private static int nextID = 1;
     private Point loc; //top left corner of this Sprite. Note loc.x and loc.y are the easy way to access the point.
     private int dir, picOrientation; //dir is the current direction in degrees.  See the constants below.
@@ -18,9 +16,7 @@ public class Hero {
     private int id;
     public static final int NORTH = 90, SOUTH = 270, WEST = 180, EAST = 0;
 
-    public Hero(int xx, int yy, int direction){
-        x = xx;
-        y = yy;
+    public Hero(int x, int y, int direction){
 
         loc = new Point(x, y);
         dir = direction;
@@ -31,9 +27,9 @@ public class Hero {
         nextID++;
     }
 
-    public void draw(Graphics2D g2) {
+    public void draw(Graphics2D g2){
         g2.setColor(Color.BLACK);
-        g2.fillRect(x, y, 30, 50);
+        g2.fillRect(loc.x, loc.y, getPic().getWidth(), getPic().getHeight());
     }
 
     /**
