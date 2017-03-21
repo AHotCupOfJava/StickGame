@@ -14,8 +14,10 @@ public class Panel extends JPanel {
     private Hero hero;
     private Timer timer;
     private boolean grow, fall, walk, move;
-    private int stickAngle, pillarWidth1, pillarWidth2;
-    private Pillar pillar1, pillar2;
+    private int pillarWidth;
+    private double stickAngle;
+
+
 
     public Panel() {
 
@@ -27,7 +29,9 @@ public class Panel extends JPanel {
         move = false;
 
         hero = new Hero(200, 500, Hero.NORTH);
-        stickAngle = -90;
+        stickAngle = -1.5;
+
+        pillarWidth = (int)(Math.random() * 130 + 15);
 
         pillarWidth1 = (int) (Math.random() * 130 + 15);
         pillarWidth2 = (int) (Math.random() * 130 + 15);
@@ -80,26 +84,24 @@ public class Panel extends JPanel {
                     grow = true;
                     stick = new Stick(200, 500);
                 }
-                if(fall){
-                    stickAngle += 10;
-//                    if(stickAngle == 0){
-//                        fall = false;
-//                        walk = true;
-//                    }
+                else if(fall){
+                    stickAngle += 0.1;
+                    if(stickAngle >= 0){
+                        fall = false;
+                        walk = true;
+                    }
                 }
-                if(walk){
+                else if(walk){
                     hero.setX((int)hero.getX() + 10);
-                    stick.setX(stick.getLoc().x + 10);
-                    if(hero.getX() > 400){
+                    if(hero.getX() >  400){
                         walk = false;
                         move = true;
                     }
 //                    if(hero.getX() > )
                 }
-                if(move){
+                else if(move){
                     hero.setX((int)hero.getX() - 10);
                     stick.setX(stick.getLoc().x - 10);
-                    pillarMove();
                 }
 
 
@@ -154,7 +156,7 @@ public class Panel extends JPanel {
             stick.draw(g2, 1, 0);
         }
 
-        hero.draw(g2);
+//        hero.draw(g2);
 
         pillar1.draw(g2);
         pillar2.draw(g2);

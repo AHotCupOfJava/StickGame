@@ -9,6 +9,7 @@ public class Stick {
     private Point begin;
     private int height;
     private Color color;
+    private double radians;
 
     public Stick(int x, int y){
         begin = new Point(x, y);
@@ -32,11 +33,12 @@ public class Stick {
             g2.drawLine(begin.x, begin.y, begin.x + height, begin.y);
 
         } else if (tiltType == 2) { //tilted
-            double angle = Math.atan(degrees);
             AffineTransform orig = g2.getTransform();
-            g2.rotate(angle, begin.x, begin.y);
+            g2.rotate(degrees, begin.x, begin.y);
             g2.drawLine(begin.x, begin.y, begin.x + height, begin.y);
             g2.setTransform(orig);
+
+            radians += .1;
         }
 
     }
