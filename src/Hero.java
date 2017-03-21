@@ -27,10 +27,10 @@ public class Hero {
         nextID++;
     }
 
-    public void draw(Graphics2D g2){
-        g2.setColor(Color.BLACK);
-        g2.fillRect(loc.x, loc.y, getPic().getWidth(), getPic().getHeight());
-    }
+//    public void draw(Graphics2D g2){
+//        g2.setColor(Color.BLACK);
+//        g2.fillRect(loc.x, loc.y, getPic().getWidth(), getPic().getHeight());
+//    }
 
     /**
      * Changes the image file that this Sprite uses to draw.
