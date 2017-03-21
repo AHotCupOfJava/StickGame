@@ -12,9 +12,10 @@ public class Panel extends JPanel {
 
     private Stick stick;
     private Hero hero;
+    private Pillar pillar1, pillar2;
     private Timer timer;
     private boolean grow, fall, walk, move;
-    private int pillarWidth;
+    private int pillarWidth1, pillarWidth2;
     private double stickAngle;
 
 
@@ -30,8 +31,6 @@ public class Panel extends JPanel {
 
         hero = new Hero(200, 500, Hero.NORTH);
         stickAngle = -1.5;
-
-        pillarWidth = (int)(Math.random() * 130 + 15);
 
         pillarWidth1 = (int) (Math.random() * 130 + 15);
         pillarWidth2 = (int) (Math.random() * 130 + 15);
