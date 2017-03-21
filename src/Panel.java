@@ -14,9 +14,8 @@ public class Panel extends JPanel {
     private Hero hero;
     private Timer timer;
     private boolean grow, fall, walk, move;
-    private int stickAngle;
-
-
+    private int stickAngle, pillarWidth1, pillarWidth2;
+    private Pillar pillar1, pillar2;
 
     public Panel() {
 
@@ -29,6 +28,18 @@ public class Panel extends JPanel {
 
         hero = new Hero(200, 500, Hero.NORTH);
         stickAngle = -90;
+
+        pillarWidth1 = (int) (Math.random() * 130 + 15);
+        pillarWidth2 = (int) (Math.random() * 130 + 15);
+
+        /*
+        two Pillar objects that change every time the Hero moves
+         */
+        int x = 50;
+        int y = 500;
+        int h = 500;
+        pillar1 = new Pillar(x, y, pillarWidth1, h);
+        pillar2 = new Pillar(getWidth()-x-pillarWidth2, y, pillarWidth2, h);
 
         addKeyListener(new KeyListener() {
             @Override
@@ -88,12 +99,14 @@ public class Panel extends JPanel {
                 if(move){
                     hero.setX((int)hero.getX() - 10);
                     stick.setX(stick.getLoc().x - 10);
+                    pillarMove();
                 }
 
 
                 repaint();
             }
         });
+        timer.start();
 
         addMouseListener(new MouseListener() {
             @Override
@@ -143,11 +156,17 @@ public class Panel extends JPanel {
 
         hero.draw(g2);
 
+        pillar1.draw(g2);
+        pillar2.draw(g2);
+    }
 
-        Pillar pillar = new Pillar(50, 500, (int) (Math.random() * 130 + 15), 500);
-        pillar.draw(g2);
-
-
+    public void pillarMove(){
+        while(pillar1.getX() > 0) {
+            pillar1.setX(getX()-1);
+        }
+        while(pillar2.getX() > 0){
+            pillar2.setX(getX()-1);
+        }
     }
 
 }
