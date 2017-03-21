@@ -30,6 +30,7 @@ public class Stick {
             g2.drawLine(begin.x, begin.y, begin.x, begin.y - height);
         } else if (tiltType == 1) { //horizontal
             g2.drawLine(begin.x, begin.y, begin.x + height, begin.y);
+
         } else if (tiltType == 2) { //tilted
             double angle = Math.atan(degrees);
             AffineTransform orig = g2.getTransform();
@@ -43,5 +44,11 @@ public class Stick {
     public void grow(){
         height += 5;
     }
+
+    public int getHeight(){ return height; }
+
+    public void setX(int x){ begin = new Point(x, begin.y); }
+
+    public Point getLoc(){ return begin; }
 
 }

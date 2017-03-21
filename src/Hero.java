@@ -170,5 +170,33 @@ public class Hero {
         return speed;
     }
 
+    /**
+     * @return the x of the current location
+     */
+    public double getX(){
+        return loc.getX();
+    }
+
+    /**
+     * @return the y of the current location
+     */
+    public double getY(){
+        return loc.getY();
+    }
+
+    /**
+     * @param newX new x value for the location
+     */
+    public void setX(int newX){
+        setLoc(new Point( newX, (int)loc.getY() ) );
+    }
+
+    /**
+     * @param newY new y value for the location
+     */
+    public void setY(int newY){
+        setLoc(new Point( (int)loc.getX(), newY)  );
+    }
+
 
 }

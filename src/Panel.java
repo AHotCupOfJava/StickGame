@@ -10,13 +10,25 @@ import static java.awt.event.KeyEvent.VK_SPACE;
 
 public class Panel extends JPanel {
 
-    Stick stick;
+    private Stick stick;
+    private Hero hero;
+    private Timer timer;
+    private boolean grow, fall, walk, move;
+    private int stickAngle;
 
-    Timer timer;
+
 
     public Panel() {
 
         stick = new Stick(200, 500);
+
+        grow = true;
+        fall = false;
+        walk = false;
+        move = false;
+
+        hero = new Hero(200, 500, Hero.NORTH);
+        stickAngle = -90;
 
         addKeyListener(new KeyListener() {
             @Override
@@ -27,7 +39,7 @@ public class Panel extends JPanel {
             @Override
             public void keyPressed(KeyEvent keyEvent) {
 
-                if(keyEvent.getKeyCode() == 32){
+                if(grow && keyEvent.getKeyCode() == 32){
                     stick.grow();
                     repaint();
                 }
@@ -37,12 +49,48 @@ public class Panel extends JPanel {
             @Override
             public void keyReleased(KeyEvent keyEvent) {
 
+                if(grow && keyEvent.getKeyCode() == 32){
+                    grow = false;
+                    fall = true;
+                    repaint();
+                }
+
             }
         });
 
         timer = new Timer(40, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+
+                hero.setX((int)hero.getX() + 10);
+
+                if(hero.getX() < 200){
+                    move = false;
+                    grow = true;
+                    stick = new Stick(200, 500);
+                }
+                if(fall){
+                    stickAngle += 10;
+                    if(stickAngle == 0){
+                        fall = false;
+                        walk = true;
+                    }
+                }
+                if(walk){
+                    hero.setX((int)hero.getX() + 10);
+                    stick.setX(stick.getLoc().x + 10);
+                    if(hero.getX() > 400){
+                        walk = false;
+                        move = true;
+                    }
+//                    if(hero.getX() > )
+                }
+                if(move){
+                    hero.setX((int)hero.getX() - 10);
+                    stick.setX(stick.getLoc().x - 10);
+                }
+
+
                 repaint();
             }
         });
@@ -80,10 +128,23 @@ public class Panel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        stick.draw(g2, 0, 0);
+        if(grow){
+            stick.draw(g2, 0, 0);
+        }
+        if(fall){
+            stick.draw(g2, 2, stickAngle);
+        }
+        if(walk){
+            stick.draw(g2, 1, 0);
+        }
+        if(move){
+            stick.draw(g2, 1, 0);
+        }
+
 
         Pillar pillar = new Pillar(50, 500, (int) (Math.random() * 130 + 15), 500);
         pillar.draw(g2);
+
 
     }
 
