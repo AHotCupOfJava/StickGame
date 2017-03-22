@@ -1,3 +1,5 @@
+import com.sun.tools.doclets.internal.toolkit.util.SourceToHTMLConverter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -14,35 +16,40 @@ public class Panel extends JPanel {
     private Hero hero;
     private Pillar pillar1, pillar2;
     private Timer timer;
-    private boolean grow, fall, walk, move;
-    private int pillarWidth1, pillarWidth2;
+    private boolean grow, fall, walk, move, die;
+    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY;
     private double stickAngle;
 
 
 
     public Panel() {
 
-        stick = new Stick(200, 500);
+        stick = new Stick(50, 500);
 
         grow = true;
         fall = false;
         walk = false;
         move = false;
+        die = false;
 
-        hero = new Hero(200, 500, Hero.NORTH);
+        hero = new Hero(50, 500, Hero.NORTH);
+        hero.setY(500 - hero.getPic().getHeight());
+
+        stick.setX(50 + hero.getPic().getWidth());
+
         stickAngle = -1.5;
 
-        pillarWidth1 = (int) (Math.random() * 130 + 15);
-        pillarWidth2 = (int) (Math.random() * 130 + 15);
+        pillarWidth1 = (int) (Math.random() * 130 + 30);
+        pillarWidth2 = (int) (Math.random() * 130 + 30);
 
         /*
         two Pillar objects that change every time the Hero moves
          */
-        int x = 50;
-        int y = 500;
-        int h = 500;
-        pillar1 = new Pillar(x, y, pillarWidth1, h);
-        pillar2 = new Pillar(getWidth()-x-pillarWidth2, y, pillarWidth2, h);
+        baseX = 50;
+        baseY = 500;
+        pillarHeight = 500;
+        pillar1 = new Pillar(baseX - pillarWidth1 + baseX, baseY, pillarWidth1, pillarHeight);
+        pillar2 = new Pillar(520 - pillarWidth2 - 50, baseY, pillarWidth2, pillarHeight);
 
         addKeyListener(new KeyListener() {
             @Override
@@ -76,14 +83,10 @@ public class Panel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-                hero.setX((int)hero.getX() + 10);
+//                hero.setX((int)hero.getX() + 10);
 
-                if(hero.getX() < 200){
-                    move = false;
-                    grow = true;
-                    stick = new Stick(200, 500);
-                }
-                else if(fall){
+
+                if(fall){
                     stickAngle += 0.1;
                     if(stickAngle >= 0){
                         fall = false;
@@ -92,15 +95,39 @@ public class Panel extends JPanel {
                 }
                 else if(walk){
                     hero.setX((int)hero.getX() + 10);
-                    if(hero.getX() >  400){
+                    int distance = stick.getLoc().x + stick.getHeight();
+                    if(hero.getX() > distance && (hero.getX() < pillar2.getX() || hero.getX() > pillar2.getX() + pillar2.getW() )){
+                        die = true;
+                        grow = false;
+                        fall = false;
+                        walk = false;
+                        move = false;
+                    }
+                    else if(hero.getX() > distance && hero.getX() > pillar2.getX() && hero.getX() < pillar2.getX() + pillar2.getW()){
                         walk = false;
                         move = true;
                     }
-//                    if(hero.getX() > )
                 }
                 else if(move){
                     hero.setX((int)hero.getX() - 10);
                     stick.setX(stick.getLoc().x - 10);
+                    pillar1.setX(pillar1.getX() - 10);
+                    pillar2.setX(pillar2.getX() - 10);
+                    if(hero.getX() < 50){
+                        move = false;
+                        grow = true;
+
+                        stick = new Stick(50 + hero.getPic().getWidth(), 500);
+                        stickAngle = -1.5;
+
+                        int w = (int) (Math.random() * 130 + 30);
+                        pillar1 = pillar2;
+                        pillar2 = new Pillar(getWidth() - baseX - w, baseY, w, pillarHeight);
+                    }
+                }
+                else if(die){
+                    hero.setDir(Hero.SOUTH);
+                    hero.setY((int)hero.getY() + 20);
                 }
 
 
@@ -145,29 +172,35 @@ public class Panel extends JPanel {
         if(grow){
             stick.draw(g2, 0, 0);
         }
-        if(fall){
+        else if(fall){
             stick.draw(g2, 2, stickAngle);
         }
-        if(walk){
+        else if(walk){
             stick.draw(g2, 1, 0);
         }
-        if(move){
+        else if(move){
             stick.draw(g2, 1, 0);
         }
 
-//        hero.draw(g2);
+        hero.draw(g2);
 
         pillar1.draw(g2);
         pillar2.draw(g2);
-    }
 
-    public void pillarMove(){
-        while(pillar1.getX() > 0) {
-            pillar1.setX(getX()-1);
+        if(die){
+            stick.draw(g2, 1, 0);
+            if(hero.getY() > getHeight()) {
+                g2.setColor(new Color(255, 0, 0, 190));
+                g2.fillRect(0, 0, getWidth(), getHeight());
+
+                g2.setColor(Color.BLACK);
+                g2.setFont(new Font("Copperplate", Font.PLAIN, 50));
+                g2.drawString("You died.", 140, getHeight() / 2);
+                timer.stop();
+            }
         }
-        while(pillar2.getX() > 0){
-            pillar2.setX(getX()-1);
-        }
+
+
     }
 
 }
