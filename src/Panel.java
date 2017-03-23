@@ -125,6 +125,7 @@ public class Panel extends JPanel {
                         stickAngle = -1.5;
 
                         int w = (int) (Math.random() * 130 + 30);
+                        pillar2.setX(100 - pillar2.getW());
                         pillar1 = pillar2;
                         pillar2 = new Pillar(getWidth() - baseX - w, baseY, w, pillarHeight);
                     }
@@ -206,10 +207,10 @@ public class Panel extends JPanel {
             stick.draw(g2, 1, 0);
         }
 
-        hero.draw(g2);
-
         pillar1.draw(g2);
         pillar2.draw(g2);
+
+        hero.draw(g2);
 
         if(die){
             stick.draw(g2, 1, 0);
