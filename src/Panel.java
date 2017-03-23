@@ -3,6 +3,8 @@ import com.sun.tools.doclets.internal.toolkit.util.SourceToHTMLConverter;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.QuadCurve2D;
+
 import static java.awt.event.KeyEvent.VK_SPACE;
 
 
@@ -16,7 +18,7 @@ public class Panel extends JPanel {
     private Hero hero;
     private Pillar pillar1, pillar2;
     private Timer timer;
-    private boolean grow, fall, walk, move, die;
+    private boolean grow, fall, walk, move, die, spacePressed;
     private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY;
     private double stickAngle;
 
@@ -31,6 +33,7 @@ public class Panel extends JPanel {
         walk = false;
         move = false;
         die = false;
+        spacePressed = false;
 
         hero = new Hero(50, 500, Hero.NORTH);
         hero.setY(500 - hero.getPic().getHeight());
@@ -61,7 +64,7 @@ public class Panel extends JPanel {
             public void keyPressed(KeyEvent keyEvent) {
 
                 if(grow && keyEvent.getKeyCode() == 32){
-                    stick.grow();
+                    spacePressed = true;
                     repaint();
                 }
 
@@ -72,6 +75,7 @@ public class Panel extends JPanel {
 
                 if(grow && keyEvent.getKeyCode() == 32){
                     grow = false;
+                    spacePressed = false;
                     fall = true;
                     repaint();
                 }
@@ -79,14 +83,14 @@ public class Panel extends JPanel {
             }
         });
 
-        timer = new Timer(40, new ActionListener() {
+        timer = new Timer(35, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
 
-//                hero.setX((int)hero.getX() + 10);
-
-
-                if(fall){
+                if(grow && spacePressed){
+                    stick.grow();
+                }
+                else if(fall){
                     stickAngle += 0.1;
                     if(stickAngle >= 0){
                         fall = false;
@@ -168,6 +172,26 @@ public class Panel extends JPanel {
     public void paint(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
+
+        g2.setColor(new Color(17, 196, 255));
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
+        g2.setColor(new Color(0, 198, 66));
+        g2.fillRect(0, 325, getWidth(), 470);
+
+        QuadCurve2D hill1 = new QuadCurve2D.Double(0, 325, 110, 270, 200, 325);
+        g2.fill(hill1);
+        QuadCurve2D hill3 = new QuadCurve2D.Double(325, 325, 425, 300, getWidth(), 375);
+        g2.fill(hill3);
+
+        g2.setColor(new Color(17, 196, 255));
+        QuadCurve2D hill2 = new QuadCurve2D.Double(200, 325, 260, 370, 325, 325);
+        g2.fill(hill2);
+
+//        g2.fillArc(100, 200, 50, 50, 180, -180);
+        g2.setColor(new Color(0, 237, 80));
+        g2.fillRect(0, 450, getWidth(), 370);
+
 
         if(grow){
             stick.draw(g2, 0, 0);
