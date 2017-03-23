@@ -16,9 +16,10 @@ public class Pillar {
 
     public void draw(Graphics2D g2) {
         g2.setColor(Color.BLACK);
-
         g2.fillRect(x, y, w, h);
 
+        g2.setColor(Color.RED);
+        g2.fillRect(x+w/2-6, y, 12, 10);
     }
 
 

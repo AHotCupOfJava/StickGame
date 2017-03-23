@@ -19,7 +19,7 @@ public class Panel extends JPanel {
     private Pillar pillar1, pillar2;
     private Timer timer;
     private boolean grow, fall, walk, move, die, spacePressed;
-    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY;
+    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points;
     private double stickAngle;
 
 
@@ -42,6 +42,8 @@ public class Panel extends JPanel {
 
         stickAngle = -1.5;
 
+        points = 0;
+
         pillarWidth1 = (int) (Math.random() * 130 + 30);
         pillarWidth2 = (int) (Math.random() * 130 + 30);
 
@@ -51,8 +53,9 @@ public class Panel extends JPanel {
         baseX = 50;
         baseY = 500;
         pillarHeight = 500;
+
         pillar1 = new Pillar(baseX - pillarWidth1 + baseX, baseY, pillarWidth1, pillarHeight);
-        pillar2 = new Pillar(520 - pillarWidth2 - 50, baseY, pillarWidth2, pillarHeight);
+        pillar2 = new Pillar(50+pillarWidth1+(int)(Math.random()*300+10), baseY, pillarWidth2, pillarHeight);
 
         addKeyListener(new KeyListener() {
             @Override
@@ -94,6 +97,9 @@ public class Panel extends JPanel {
                     stickAngle += 0.1;
                     if(stickAngle >= 0){
                         fall = false;
+                        int distance = stick.getLoc().x + stick.getHeight();
+                        if(distance > pillar2.getX()+pillar2.getW()/2-6 && distance < pillar2.getX()+pillar2.getW()/2+6)
+                            points++;
                         walk = true;
                     }
                 }
@@ -111,6 +117,7 @@ public class Panel extends JPanel {
                         walk = false;
                         move = true;
                     }
+
                 }
                 else if(move){
                     hero.setX((int)hero.getX() - 10);
@@ -128,6 +135,7 @@ public class Panel extends JPanel {
                         pillar2.setX(100 - pillar2.getW());
                         pillar1 = pillar2;
                         pillar2 = new Pillar(getWidth() - baseX - w, baseY, w, pillarHeight);
+                        points++;
                     }
                 }
                 else if(die){
@@ -177,6 +185,11 @@ public class Panel extends JPanel {
         Background background = new Background(getWidth(), getHeight());
         background.draw(g2);
 
+        g2.setColor(Color.BLACK);
+        g2.setFont(new Font("Dialog", Font.PLAIN, 50));
+        String pts = ""+points;
+        g2.drawString(pts, 240, 100);
+
 
         if(grow){
             stick.draw(g2, 0, 0);
@@ -186,6 +199,13 @@ public class Panel extends JPanel {
         }
         else if(walk){
             stick.draw(g2, 1, 0);
+
+            int distance = stick.getLoc().x + stick.getHeight();
+            if(distance > pillar2.getX()+pillar2.getW()/2-6 && distance < pillar2.getX()+pillar2.getW()/2+6){
+                g2.setColor(Color.BLACK);
+                g2.setFont(new Font("Dialog", Font.PLAIN, 20));
+                g2.drawString("PERFECT! +1", 250, 300);
+            }
         }
         else if(move){
             stick.draw(g2, 1, 0);
