@@ -18,9 +18,10 @@ public class Panel extends JPanel {
     private Hero hero;
     private Pillar pillar1, pillar2;
     private Timer timer;
-    private boolean grow, fall, walk, move, die, spacePressed;
-    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points;
+    private boolean start, grow, fall, walk, move, die, spacePressed;
+    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY;
     private double stickAngle;
+    private Rectangle startButton, restartButton;
 
 
 
@@ -28,11 +29,17 @@ public class Panel extends JPanel {
 
         stick = new Stick(50, 500);
 
-        grow = true;
+        start = true;
+
+        startButton = new Rectangle(210, 420, 100, 40);
+        restartButton = new Rectangle(210, 400, 100, 40);
+
+        grow = false;
         fall = false;
         walk = false;
         move = false;
         die = false;
+
         spacePressed = false;
 
         hero = new Hero(50, 500, Hero.NORTH);
@@ -147,12 +154,21 @@ public class Panel extends JPanel {
                 repaint();
             }
         });
-        timer.start();
 
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 System.out.println(mouseEvent.getX() + ", " + mouseEvent.getY());
+
+                if(start && startButton.contains(mouseEvent.getX(), mouseEvent.getY())){
+                    start = false;
+                    grow = true;
+                    timer.start();
+                }
+                else if(die && hero.getY() > getHeight() && restartButton.contains(mouseEvent.getX(), mouseEvent.getY())){
+                    restart();
+                    System.out.println("restart");
+                }
             }
 
             @Override
@@ -191,7 +207,20 @@ public class Panel extends JPanel {
         g2.drawString(pts, 240, 100);
 
 
-        if(grow){
+        if(start){
+            g2.setColor(new Color(109, 207, 255));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+
+            g2.setColor(Color.BLACK);
+            g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 70));
+            g2.drawString("STICK HERO", 40, getHeight() / 2);
+            g2.fill(startButton);
+
+            g2.setColor(new Color(109, 207, 255));
+            g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
+            g2.drawString("Start", 230, 445); //215 if 20pt font
+        }
+        else if(grow){
             stick.draw(g2, 0, 0);
         }
         else if(fall){
@@ -219,17 +248,61 @@ public class Panel extends JPanel {
         if(die){
             stick.draw(g2, 1, 0);
             if(hero.getY() > getHeight()) {
-                g2.setColor(new Color(255, 0, 0, 190));
+                g2.setColor(new Color(255, 0, 0, 200));
                 g2.fillRect(0, 0, getWidth(), getHeight());
 
                 g2.setColor(Color.BLACK);
-                g2.setFont(new Font("Copperplate", Font.PLAIN, 50));
-                g2.drawString("You died.", 140, getHeight() / 2);
+                g2.setFont(new Font("Copperplate", Font.PLAIN, 60));
+                g2.drawString("You died.", 123, getHeight() / 2);
+                g2.fill(restartButton);
+
+                g2.setColor(new Color(255, 0, 0));
+                g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
+                g2.drawString("Restart", 217, 425); //??? if 20pt font
+
                 timer.stop();
             }
         }
 
 
+    }
+
+    public void restart(){
+        stick = new Stick(50, 500);
+
+        start = true;
+
+        startButton = new Rectangle(210, 420, 100, 40);
+        restartButton = new Rectangle(210, 400, 100, 40);
+
+        grow = false;
+        fall = false;
+        walk = false;
+        move = false;
+        die = false;
+
+        spacePressed = false;
+
+        hero = new Hero(50, 500, Hero.NORTH);
+        hero.setY(500 - hero.getPic().getHeight());
+
+        stick.setX(50 + hero.getPic().getWidth());
+
+        stickAngle = -1.5;
+
+        pillarWidth1 = (int) (Math.random() * 130 + 30);
+        pillarWidth2 = (int) (Math.random() * 130 + 30);
+
+        /*
+        two Pillar objects that change every time the Hero moves
+         */
+        baseX = 50;
+        baseY = 500;
+        pillarHeight = 500;
+        pillar1 = new Pillar(baseX - pillarWidth1 + baseX, baseY, pillarWidth1, pillarHeight);
+        pillar2 = new Pillar(520 - pillarWidth2 - 50, baseY, pillarWidth2, pillarHeight);
+
+        timer.restart();
     }
 
 }
