@@ -17,9 +17,10 @@ public class Panel extends JPanel {
     private Stick stick;
     private Hero hero;
     private Pillar pillar1, pillar2;
+    private Background background;
     private Timer timer;
     private boolean start, grow, fall, walk, move, die, spacePressed;
-    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY;
+    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points;
     private double stickAngle;
     private Rectangle startButton, restartButton;
 
@@ -28,6 +29,8 @@ public class Panel extends JPanel {
     public Panel() {
 
         stick = new Stick(50, 500);
+
+        background = new Background(520, 770);
 
         start = true;
 
@@ -198,7 +201,6 @@ public class Panel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
-        Background background = new Background(getWidth(), getHeight());
         background.draw(g2);
 
         g2.setColor(Color.BLACK);
