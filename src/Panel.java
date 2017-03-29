@@ -1,11 +1,16 @@
 import com.sun.tools.doclets.internal.toolkit.util.SourceToHTMLConverter;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.QuadCurve2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_SPACE;
+import static java.awt.event.KeyEvent.VK_UP;
 
 
 /**
@@ -20,9 +25,10 @@ public class Panel extends JPanel {
     private Background background;
     private Timer timer;
     private boolean start, grow, fall, walk, move, die, spacePressed;
-    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points;
+    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points, money;
     private double stickAngle;
     private Rectangle startButton, restartButton;
+    private Cherries cherry;
 
 
 
@@ -54,6 +60,8 @@ public class Panel extends JPanel {
 
         points = 0;
 
+        money = 0;
+
         pillarWidth1 = (int) (Math.random() * 130 + 30);
         pillarWidth2 = (int) (Math.random() * 130 + 30);
 
@@ -66,6 +74,8 @@ public class Panel extends JPanel {
 
         pillar1 = new Pillar(baseX - pillarWidth1 + baseX, baseY, pillarWidth1, pillarHeight);
         pillar2 = new Pillar(50+pillarWidth1+(int)(Math.random()*300+10), baseY, pillarWidth2, pillarHeight);
+
+        cherry = new Cherries(pillar1.getX()+pillarWidth1+(int)(Math.random()*300+10)-30, 510, cherry.NORTH);
 
         addKeyListener(new KeyListener() {
             @Override
@@ -92,6 +102,17 @@ public class Panel extends JPanel {
                     fall = true;
                     repaint();
                 }
+                if(walk && keyEvent.getKeyCode() == VK_DOWN){
+                    hero.setPic("Hero2.png", hero.getDir());
+                    hero.setY((int)(hero.getY()+41+5));
+                    repaint();
+                }
+
+                if(keyEvent.getKeyCode() == VK_UP && hero.getLoc().y > 500){
+                    hero.setPic("Hero.png", hero.getDir());
+                    hero.setY((int)(hero.getY()-41-5));
+                    repaint();
+                }
 
             }
         });
@@ -116,6 +137,8 @@ public class Panel extends JPanel {
                 else if(walk){
                     hero.setX((int)hero.getX() + 10);
                     int distance = stick.getLoc().x + stick.getHeight();
+                    if(hero.getLoc().x+40 > pillar2.getX() && (int)(hero.getY()) > 500)
+                        die = true;
                     if(hero.getX() > distance && (hero.getX() < pillar2.getX() || hero.getX() > pillar2.getX() + pillar2.getW() )){
                         die = true;
                         grow = false;
@@ -123,7 +146,7 @@ public class Panel extends JPanel {
                         walk = false;
                         move = false;
                     }
-                    else if(hero.getX() > distance && hero.getX() > pillar2.getX() && hero.getX() < pillar2.getX() + pillar2.getW()){
+                    else if(hero.getX()+40 > distance && hero.getX()+40 > pillar2.getX() && hero.getX() < pillar2.getX() + pillar2.getW()){
                         walk = false;
                         move = true;
                     }
@@ -134,6 +157,7 @@ public class Panel extends JPanel {
                     stick.setX(stick.getLoc().x - 10);
                     pillar1.setX(pillar1.getX() - 10);
                     pillar2.setX(pillar2.getX() - 10);
+                    cherry.setX((int)cherry.getX()-10);
                     if(hero.getX() < 50){
                         move = false;
                         grow = true;
@@ -146,13 +170,17 @@ public class Panel extends JPanel {
                         pillar1 = pillar2;
                         pillar2 = new Pillar(getWidth() - baseX - w, baseY, w, pillarHeight);
                         points++;
+                        cherry.setX(50+pillarWidth1+(int)(Math.random()*300+10)-30);
+                    }
+                    if(hero.getLoc().x+40 > cherry.getLoc().x && hero.getLoc().y > 500){
+                        money++;
+                        cherry.setPic("transparent.png", cherry.getDir());
                     }
                 }
                 else if(die){
                     hero.setDir(Hero.SOUTH);
                     hero.setY((int)hero.getY() + 20);
                 }
-
 
                 repaint();
             }
@@ -205,11 +233,11 @@ public class Panel extends JPanel {
 
         g2.setColor(Color.BLACK);
         g2.setFont(new Font("Dialog", Font.PLAIN, 50));
-        String pts = ""+points;
+        String pts = "" + points;
         g2.drawString(pts, 240, 100);
 
 
-        if(start){
+        if (start) {
             g2.setColor(new Color(109, 207, 255));
             g2.fillRect(0, 0, getWidth(), getHeight());
 
@@ -222,30 +250,36 @@ public class Panel extends JPanel {
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
             g2.drawString("Start", 230, 445); //215 if 20pt font
         }
-        else if(grow){
-            stick.draw(g2, 0, 0);
-        }
-        else if(fall){
-            stick.draw(g2, 2, stickAngle);
-        }
-        else if(walk){
-            stick.draw(g2, 1, 0);
+        else {
+            g2.setColor(Color.BLACK);
+            g2.setFont(new Font("Dialog", Font.PLAIN, 20));
+            g2.drawString("Cherries: " + money, 10, 30);
 
-            int distance = stick.getLoc().x + stick.getHeight();
-            if(distance > pillar2.getX()+pillar2.getW()/2-6 && distance < pillar2.getX()+pillar2.getW()/2+6){
-                g2.setColor(Color.BLACK);
-                g2.setFont(new Font("Dialog", Font.PLAIN, 20));
-                g2.drawString("PERFECT! +1", 250, 300);
+
+            if (grow) {
+                stick.draw(g2, 0, 0);
+            } else if (fall) {
+                stick.draw(g2, 2, stickAngle);
+            } else if (walk) {
+                stick.draw(g2, 1, 0);
+
+                int distance = stick.getLoc().x + stick.getHeight();
+                if (distance > pillar2.getX() + pillar2.getW() / 2 - 6 && distance < pillar2.getX() + pillar2.getW() / 2 + 6) {
+                    g2.setColor(Color.BLACK);
+                    g2.setFont(new Font("Dialog", Font.PLAIN, 20));
+                    g2.drawString("PERFECT! +1", 250, 300);
+                }
+            } else if (move) {
+                stick.draw(g2, 1, 0);
             }
-        }
-        else if(move){
-            stick.draw(g2, 1, 0);
-        }
 
+            cherry.draw(g2);
+        }
         pillar1.draw(g2);
         pillar2.draw(g2);
 
         hero.draw(g2);
+
 
         if(die){
             stick.draw(g2, 1, 0);
