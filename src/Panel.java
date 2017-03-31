@@ -1,15 +1,8 @@
-import com.sun.tools.doclets.internal.toolkit.util.SourceToHTMLConverter;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.QuadCurve2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
 
 import static java.awt.event.KeyEvent.VK_DOWN;
-import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.awt.event.KeyEvent.VK_UP;
 
 
@@ -151,6 +144,11 @@ public class Panel extends JPanel {
                         move = true;
                     }
 
+                    if(hero.getLoc().x+40 > cherry.getLoc().x && hero.getLoc().y > 500){
+                        money++;
+                        cherry.setPic("transparent.png", cherry.getDir());
+                    }
+
                 }
                 else if(move){
                     hero.setX((int)hero.getX() - 10);
@@ -170,11 +168,8 @@ public class Panel extends JPanel {
                         pillar1 = pillar2;
                         pillar2 = new Pillar(getWidth() - baseX - w, baseY, w, pillarHeight);
                         points++;
-                        cherry.setX(50+pillarWidth1+(int)(Math.random()*300+10)-30);
-                    }
-                    if(hero.getLoc().x+40 > cherry.getLoc().x && hero.getLoc().y > 500){
-                        money++;
-                        cherry.setPic("transparent.png", cherry.getDir());
+                        cherry.setPic("cherries.png", cherry.getDir());
+                        cherry.setX(50+pillarWidth1+(int)(Math.random()*(getWidth()-pillar2.getW()-pillar1.getX()-pillar1.getW())+pillar1.getX()+pillar1.getW()));
                     }
                 }
                 else if(die){
