@@ -130,6 +130,10 @@ public class Panel extends JPanel {
                 else if(walk){
                     hero.setX((int)hero.getX() + 10);
                     int distance = stick.getLoc().x + stick.getHeight();
+                    if(hero.getLoc().x+40 > cherry.getLoc().x && hero.getLoc().y > 500){
+                        money++;
+                        cherry.setPic("transparent.png", cherry.getDir());
+                    }
                     if(hero.getLoc().x+40 > pillar2.getX() && (int)(hero.getY()) > 500)
                         die = true;
                     if(hero.getX() > distance && (hero.getX() < pillar2.getX() || hero.getX() > pillar2.getX() + pillar2.getW() )){
@@ -139,16 +143,10 @@ public class Panel extends JPanel {
                         walk = false;
                         move = false;
                     }
-                    else if(hero.getX()+40 > distance && hero.getX()+40 > pillar2.getX() && hero.getX() < pillar2.getX() + pillar2.getW()){
+                    else if(hero.getX() > distance && hero.getX() > pillar2.getX() && hero.getX() < pillar2.getX() + pillar2.getW()){
                         walk = false;
                         move = true;
                     }
-
-                    if(hero.getLoc().x+40 > cherry.getLoc().x && hero.getLoc().y > 500){
-                        money++;
-                        cherry.setPic("transparent.png", cherry.getDir());
-                    }
-
                 }
                 else if(move){
                     hero.setX((int)hero.getX() - 10);
@@ -169,7 +167,10 @@ public class Panel extends JPanel {
                         pillar2 = new Pillar(getWidth() - baseX - w, baseY, w, pillarHeight);
                         points++;
                         cherry.setPic("cherries.png", cherry.getDir());
-                        cherry.setX(50+pillarWidth1+(int)(Math.random()*(getWidth()-pillar2.getW()-pillar1.getX()-pillar1.getW())+pillar1.getX()+pillar1.getW()));
+                        int random = (int)(Math.random()*(pillar2.getX()-pillar1.getX()-pillar1.getW())+pillar1.getX()+pillar1.getW());
+                        if(random+20 > pillar2.getX())
+                            random-=20;
+                        cherry.setX(random);
                     }
                 }
                 else if(die){
