@@ -9,6 +9,7 @@ public class Background {
 
     private int w, h;
     private ArrayList<QuadCurve2D> topHills, mediumHills, bottomHills;
+    private Color ltBlue1, ltBlue2, green1, green2, green3, green4;
 
     public Background(int width, int height){
 
@@ -28,20 +29,28 @@ public class Background {
         mediumHills.add(new QuadCurve2D.Double(250, 420, 290, 470, 370, 440)); //hill 3
         mediumHills.add(new QuadCurve2D.Double(370, 440, 450, 390, 520, 410)); //hill 4
 
+        ltBlue1 = new Color(77, 207, 255);
+        ltBlue2 = new Color(0, 117, 255);
+
+        green1 = new Color(0, 198, 66);
+        green2 = new Color(0, 135, 45);
+
+        green3 = new Color(0, 237, 80);
+        green4 = new Color(0, 136, 46);
 
     }
 
     public void draw(Graphics2D g2){
-        g2.setColor(new Color(17, 196, 255));
+        g2.setPaint(new GradientPaint(w/2, h/2, ltBlue2, w/2, 0, ltBlue1));
         g2.fillRect(0, 0, w, h);
 
-        g2.setColor(new Color(0, 198, 66));
+        g2.setPaint(new GradientPaint(w/2, h - 200, green2, w/2, h/2, green1));
         g2.fillRect(0, 325, w, 470);
 
         g2.fill(topHills.get(0));
         g2.fill(topHills.get(2));
 
-        g2.setColor(new Color(17, 196, 255));
+        g2.setPaint(new GradientPaint(w/2, h/2, ltBlue2, w/2, 0, ltBlue1));
         g2.fill(topHills.get(1));
 
         int[] xes = new int[3];
@@ -55,7 +64,7 @@ public class Background {
 
         g2.fillPolygon(xes, yes, 3);
 
-        g2.setColor(new Color(0, 237, 80));
+        g2.setPaint(new GradientPaint(w/2, h, green4, w/2, h/2 + 200, green3));
         g2.fillRect(0, 420, w, 370);
         g2.draw(mediumHills.get(0));
         g2.fill(mediumHills.get(1));
@@ -92,7 +101,7 @@ public class Background {
         g2.fillPolygon(x1, y1, 3);
         g2.fillPolygon(x3, y3, 3);
 
-        g2.setColor(new Color(0, 198, 66));
+        g2.setPaint(new GradientPaint(w/2, h - 200, green2, w/2, h/2, green1));
         g2.fill(mediumHills.get(0));
         g2.fill(mediumHills.get(2));
 
