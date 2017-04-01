@@ -17,7 +17,7 @@ public class Panel extends JPanel {
     private Pillar pillar1, pillar2;
     private Background background;
     private Timer timer;
-    private boolean start, grow, fall, walk, move, die, spacePressed;
+    private boolean start, grow, fall, walk, move, die, spacePressed, day;
     private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points, money;
     private double stickAngle;
     private Rectangle startButton, restartButton;
@@ -29,7 +29,8 @@ public class Panel extends JPanel {
 
         stick = new Stick(50, 500);
 
-        background = new Background(520, 770);
+        background = new Hills(520, 770);
+        background.setDay(day);
 
         start = true;
 
@@ -227,7 +228,10 @@ public class Panel extends JPanel {
 
         background.draw(g2);
 
-        g2.setColor(Color.BLACK);
+        if(day)
+            g2.setColor(Color.BLACK);
+        else
+            g2.setColor(Color.WHITE);
         g2.setFont(new Font("Dialog", Font.PLAIN, 50));
         String pts = "" + points;
         g2.drawString(pts, 240, 100);
@@ -247,7 +251,10 @@ public class Panel extends JPanel {
             g2.drawString("Start", 230, 445); //215 if 20pt font
         }
         else {
-            g2.setColor(Color.BLACK);
+            if(day)
+                g2.setColor(Color.BLACK);
+            else
+                g2.setColor(Color.WHITE);
             g2.setFont(new Font("Dialog", Font.PLAIN, 20));
             g2.drawString("Cherries: " + money, 10, 30);
 
@@ -261,7 +268,10 @@ public class Panel extends JPanel {
 
                 int distance = stick.getLoc().x + stick.getHeight();
                 if (distance > pillar2.getX() + pillar2.getW() / 2 - 6 && distance < pillar2.getX() + pillar2.getW() / 2 + 6) {
-                    g2.setColor(Color.BLACK);
+                    if(day)
+                        g2.setColor(Color.BLACK);
+                    else
+                        g2.setColor(Color.WHITE);
                     g2.setFont(new Font("Dialog", Font.PLAIN, 20));
                     g2.drawString("PERFECT! +1", 250, 300);
                 }
@@ -321,6 +331,8 @@ public class Panel extends JPanel {
         stick.setX(50 + hero.getPic().getWidth());
 
         stickAngle = -1.5;
+
+        background = new Hills(520, 770);
 
         pillarWidth1 = (int) (Math.random() * 130 + 30);
         pillarWidth2 = (int) (Math.random() * 130 + 30);
