@@ -17,7 +17,7 @@ public class Panel extends JPanel {
     private Pillar pillar1, pillar2;
     private Background background;
     private Timer timer;
-    private boolean start, grow, fall, walk, move, die, store, spacePressed, profit, day;
+    private boolean start, grow, fall, walk, move, die, store, spacePressed, profit;
     private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points, money;
     private double stickAngle;
     private Rectangle startButton, restartButton, storeButton, backButton;
@@ -30,7 +30,12 @@ public class Panel extends JPanel {
         stick = new Stick(50, 500);
 
         background = new Hills(520, 770);
-        background.setDay(day);
+        background.setDay(background.isDay());
+
+        if(background.isDay())
+            stick.setColor(new Color(45, 22, 24));
+        else
+            stick.setColor(new Color(141, 98, 74));
 
         start = true;
         store = false;
@@ -243,13 +248,18 @@ public class Panel extends JPanel {
 
         background.draw(g2);
 
-        if(day)
+        if(background.isDay())
             g2.setColor(Color.BLACK);
         else
             g2.setColor(Color.WHITE);
         g2.setFont(new Font("Dialog", Font.PLAIN, 50));
         String pts = "" + points;
         g2.drawString(pts, 240, 100);
+
+        if(background.isDay())
+            stick.setColor(new Color(45, 22, 24));
+        else
+            stick.setColor(new Color(141, 98, 74));
 
 
         if (start) {
@@ -281,13 +291,17 @@ public class Panel extends JPanel {
             g2.drawString("STORE", 140, 100);
         }
         else {
-            if(day)
+            if(background.isDay())
                 g2.setColor(Color.BLACK);
             else
                 g2.setColor(Color.WHITE);
             g2.setFont(new Font("Dialog", Font.PLAIN, 20));
             g2.drawString("Cherries: " + money, 10, 30);
 
+            if(background.isDay())
+                stick.setColor(new Color(45, 22, 24));
+            else
+                stick.setColor(new Color(141, 98, 74));
 
             if (grow) {
                 stick.draw(g2, 0, 0);
@@ -298,7 +312,7 @@ public class Panel extends JPanel {
 
                 int distance = stick.getLoc().x + stick.getHeight();
                 if (distance > pillar2.getX() + pillar2.getW() / 2 - 6 && distance < pillar2.getX() + pillar2.getW() / 2 + 6) {
-                    if(day)
+                    if(background.isDay())
                         g2.setColor(Color.BLACK);
                     else
                         g2.setColor(Color.WHITE);
