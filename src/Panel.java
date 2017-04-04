@@ -17,10 +17,10 @@ public class Panel extends JPanel {
     private Pillar pillar1, pillar2;
     private Background background;
     private Timer timer;
-    private boolean start, grow, fall, walk, move, die, spacePressed, day;
+    private boolean start, grow, fall, walk, move, die, store, spacePressed, profit, day;
     private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points, money;
     private double stickAngle;
-    private Rectangle startButton, restartButton;
+    private Rectangle startButton, restartButton, storeButton, backButton;
     private Cherries cherry;
 
 
@@ -33,9 +33,12 @@ public class Panel extends JPanel {
         background.setDay(day);
 
         start = true;
+        store = false;
 
-        startButton = new Rectangle(210, 420, 100, 40);
+        startButton = new Rectangle(110, 420, 100, 40);
         restartButton = new Rectangle(210, 400, 100, 40);
+        storeButton = new Rectangle(310, 420, 100, 40);
+        backButton = new Rectangle(210, 200, 100, 40);
 
         grow = false;
         fall = false;
@@ -55,6 +58,7 @@ public class Panel extends JPanel {
         points = 0;
 
         money = 0;
+        profit = false;
 
         pillarWidth1 = (int) (Math.random() * 130 + 30);
         pillarWidth2 = (int) (Math.random() * 130 + 30);
@@ -131,7 +135,8 @@ public class Panel extends JPanel {
                 else if(walk){
                     hero.setX((int)hero.getX() + 10);
                     int distance = stick.getLoc().x + stick.getHeight();
-                    if(hero.getLoc().x+40 > cherry.getLoc().x && hero.getLoc().y > 500){
+                    if(hero.getLoc().x+40 > cherry.getLoc().x && hero.getLoc().y > 500 && !profit){
+                        profit = true;
                         money++;
                         cherry.setPic("transparent.png", cherry.getDir());
                     }
@@ -147,6 +152,7 @@ public class Panel extends JPanel {
                     else if(hero.getX() > distance && hero.getX() > pillar2.getX() && hero.getX() < pillar2.getX() + pillar2.getW()){
                         walk = false;
                         move = true;
+                        profit = false;
                     }
                 }
                 else if(move){
@@ -190,8 +196,17 @@ public class Panel extends JPanel {
 
                 if(start && startButton.contains(mouseEvent.getX(), mouseEvent.getY())){
                     start = false;
+                    store = false;
                     grow = true;
                     timer.start();
+                }
+                else if(start && storeButton.contains(mouseEvent.getX(), mouseEvent.getY())){
+                    start = false;
+                    store = true;
+                    repaint();
+                }
+                else if(store){
+
                 }
                 else if(die && hero.getY() > getHeight() && restartButton.contains(mouseEvent.getX(), mouseEvent.getY())){
                     restart();
@@ -245,10 +260,25 @@ public class Panel extends JPanel {
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 70));
             g2.drawString("STICK HERO", 40, getHeight() / 2);
             g2.fill(startButton);
+            g2.fill(storeButton);
 
             g2.setColor(new Color(109, 207, 255));
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
-            g2.drawString("Start", 230, 445); //215 if 20pt font
+            g2.drawString("Start", 130, 445); //215 if 20pt font
+            g2.drawString("Store", 330, 445);
+
+            pillar1.draw(g2);
+            pillar2.draw(g2);
+
+            hero.draw(g2);
+        }
+        else if (store){
+            g2.setColor(new Color(109, 207, 255));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+
+            g2.setColor(Color.BLACK);
+            g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 70));
+            g2.drawString("STORE", 140, 100);
         }
         else {
             if(day)
@@ -280,11 +310,12 @@ public class Panel extends JPanel {
             }
 
             cherry.draw(g2);
-        }
-        pillar1.draw(g2);
-        pillar2.draw(g2);
 
-        hero.draw(g2);
+            pillar1.draw(g2);
+            pillar2.draw(g2);
+
+            hero.draw(g2);
+        }
 
 
         if(die){
@@ -314,9 +345,6 @@ public class Panel extends JPanel {
 
         start = true;
 
-        startButton = new Rectangle(210, 420, 100, 40);
-        restartButton = new Rectangle(210, 400, 100, 40);
-
         grow = false;
         fall = false;
         walk = false;
@@ -332,6 +360,9 @@ public class Panel extends JPanel {
 
         stickAngle = -1.5;
 
+        points = 0;
+        profit = false;
+
         background = new Hills(520, 770);
 
         pillarWidth1 = (int) (Math.random() * 130 + 30);
@@ -343,8 +374,11 @@ public class Panel extends JPanel {
         baseX = 50;
         baseY = 500;
         pillarHeight = 500;
+
         pillar1 = new Pillar(baseX - pillarWidth1 + baseX, baseY, pillarWidth1, pillarHeight);
-        pillar2 = new Pillar(520 - pillarWidth2 - 50, baseY, pillarWidth2, pillarHeight);
+        pillar2 = new Pillar(50+pillarWidth1+(int)(Math.random()*300+10), baseY, pillarWidth2, pillarHeight);
+
+        cherry = new Cherries(pillar1.getX()+pillarWidth1+(int)(Math.random()*300+10)-30, 510, cherry.NORTH);
 
         timer.restart();
     }
