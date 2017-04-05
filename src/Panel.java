@@ -29,7 +29,11 @@ public class Panel extends JPanel {
 
         stick = new Stick(50, 500);
 
-        background = new Hills(520, 770);
+        int random = (int)(Math.random()*2);
+        if(random == 0)
+            background = new Hills(520, 770);
+        else
+            background = new Mountains(520, 770);
         background.setDay(background.isDay());
 
         if(background.isDay())
@@ -107,13 +111,13 @@ public class Panel extends JPanel {
                 }
                 if(walk && keyEvent.getKeyCode() == VK_DOWN){
                     hero.setPic("Hero2.png", hero.getDir());
-                    hero.setY((int)(hero.getY()+41+5));
+                    hero.setY((int)(hero.getY()+hero.getPic().getHeight()+5)); //5 = stick width
                     repaint();
                 }
 
                 if(keyEvent.getKeyCode() == VK_UP && hero.getLoc().y > 500){
                     hero.setPic("Hero.png", hero.getDir());
-                    hero.setY((int)(hero.getY()-41-5));
+                    hero.setY((int)(hero.getY()-hero.getPic().getHeight()-5)); //5 = stick width
                     repaint();
                 }
 
@@ -140,12 +144,12 @@ public class Panel extends JPanel {
                 else if(walk){
                     hero.setX((int)hero.getX() + 10);
                     int distance = stick.getLoc().x + stick.getHeight();
-                    if(hero.getLoc().x+40 > cherry.getLoc().x && hero.getLoc().y > 500 && !profit){
+                    if(hero.getLoc().x+hero.getPic().getWidth() > cherry.getLoc().x && hero.getLoc().y > 500 && !profit){
                         profit = true;
                         money++;
                         cherry.setPic("transparent.png", cherry.getDir());
                     }
-                    if(hero.getLoc().x+40 > pillar2.getX() && (int)(hero.getY()) > 500)
+                    if(hero.getLoc().x+hero.getPic().getWidth() > pillar2.getX() && (int)(hero.getY()) > 500)
                         die = true;
                     if(hero.getX() > distance && (hero.getX() < pillar2.getX() || hero.getX() > pillar2.getX() + pillar2.getW() )){
                         die = true;
@@ -268,9 +272,17 @@ public class Panel extends JPanel {
 
             g2.setColor(Color.BLACK);
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 70));
-            g2.drawString("STICK HERO", 40, getHeight() / 2);
+            g2.drawString("STICK HERO", 40, 82);
             g2.fill(startButton);
             g2.fill(storeButton);
+
+            g2.setFont(new Font("Dialog", Font.BOLD, 20));
+            g2.drawString("INSTRUCTIONS", 185, 140);
+            g2.setFont(new Font("Dialog", Font.PLAIN, 16));
+            g2.drawString("Hold space to stretch out the stick.", 125, 170);
+            g2.drawString("Press the up and down arrow keys to flip sides on the stick.", 32, 200);
+            g2.drawString("Collect the cherries to buy more characters.", 88, 230);
+            g2.drawString("If the stick lands in the red zone, you get +1 points.", 53, 260);
 
             g2.setColor(new Color(109, 207, 255));
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
@@ -377,7 +389,11 @@ public class Panel extends JPanel {
         points = 0;
         profit = false;
 
-        background = new Hills(520, 770);
+        int random = (int)(Math.random()*2);
+        if(random == 0)
+            background = new Hills(520, 770);
+        else
+            background = new Mountains(520, 770);
 
         pillarWidth1 = (int) (Math.random() * 130 + 30);
         pillarWidth2 = (int) (Math.random() * 130 + 30);
