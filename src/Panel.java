@@ -57,7 +57,7 @@ public class Panel extends JPanel {
 
         spacePressed = false;
 
-        hero = new Hero(50, 500, Hero.NORTH);
+        hero = new Hero(50, 500, Hero.NORTH, "Hero.png");
         hero.setY(500 - hero.getPic().getHeight());
 
         stick.setX(50 + hero.getPic().getWidth());
@@ -110,13 +110,13 @@ public class Panel extends JPanel {
                     repaint();
                 }
                 if(walk && keyEvent.getKeyCode() == VK_DOWN){
-                    hero.setPic("Hero2.png", hero.getDir());
+                    hero.flip();
                     hero.setY((int)(hero.getY()+hero.getPic().getHeight()+5)); //5 = stick width
                     repaint();
                 }
 
                 if(keyEvent.getKeyCode() == VK_UP && hero.getLoc().y > 500){
-                    hero.setPic("Hero.png", hero.getDir());
+                    hero.flip();
                     hero.setY((int)(hero.getY()-hero.getPic().getHeight()-5)); //5 = stick width
                     repaint();
                 }
@@ -389,7 +389,7 @@ public class Panel extends JPanel {
 
         spacePressed = false;
 
-        hero = new Hero(50, 500, Hero.NORTH);
+        hero = new Hero(50, 500, Hero.NORTH, "Hero.png");
         hero.setY(500 - hero.getPic().getHeight());
 
         stick.setX(50 + hero.getPic().getWidth());

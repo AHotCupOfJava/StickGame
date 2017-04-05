@@ -18,11 +18,11 @@ public class Hero {
     private int id;
     public static final int NORTH = 90, SOUTH = 270, WEST = 180, EAST = 0;
 
-    public Hero(int x, int y, int direction){
+    public Hero(int x, int y, int direction, String picName){
 
         loc = new Point(x, y);
         dir = direction;
-        setPic("Hero.png", NORTH);
+        setPic(picName, NORTH);
         speed = 5;
 
         id = nextID;
@@ -58,6 +58,15 @@ public class Hero {
             e.printStackTrace();
         }
     }
+
+    public void flip(){
+
+        AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
+        tx.translate(0, -getPic().getHeight(null));
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        setPic(op.filter(getPic(), null));
+    }
+
 
     /**
      * Changes the direction the Sprite is facing by the given angle.
