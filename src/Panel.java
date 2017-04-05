@@ -47,7 +47,7 @@ public class Panel extends JPanel {
         startButton = new Rectangle(110, 420, 100, 40);
         restartButton = new Rectangle(210, 400, 100, 40);
         storeButton = new Rectangle(310, 420, 100, 40);
-        backButton = new Rectangle(210, 200, 100, 40);
+        backButton = new Rectangle(210, 110, 100, 40);
 
         grow = false;
         fall = false;
@@ -212,10 +212,14 @@ public class Panel extends JPanel {
                 else if(start && storeButton.contains(mouseEvent.getX(), mouseEvent.getY())){
                     start = false;
                     store = true;
+//                    timer.start();
                     repaint();
                 }
-                else if(store){
-
+                else if(store && backButton.contains(mouseEvent.getX(), mouseEvent.getY())){
+                    start = true;
+                    store = false;
+//                    timer.stop();
+                    repaint();
                 }
                 else if(die && hero.getY() > getHeight() && restartButton.contains(mouseEvent.getX(), mouseEvent.getY())){
                     restart();
@@ -301,6 +305,12 @@ public class Panel extends JPanel {
             g2.setColor(Color.BLACK);
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 70));
             g2.drawString("STORE", 140, 100);
+            g2.fill(backButton);
+
+            g2.setColor(new Color(109, 207, 255));
+            g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
+            g2.drawString("Back", 235, 135); //??? if 20pt font
+
         }
         else {
             if(background.isDay())
