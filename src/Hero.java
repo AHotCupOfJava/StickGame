@@ -16,6 +16,7 @@ public class Hero {
     private BufferedImage pic; //put the file in the res folder.
     private int speed; //Number of pixels moved each frame.
     private int id;
+    private boolean flipped;
     public static final int NORTH = 90, SOUTH = 270, WEST = 180, EAST = 0;
 
     public Hero(int x, int y, int direction, String picName){
@@ -24,6 +25,8 @@ public class Hero {
         dir = direction;
         setPic(picName, NORTH);
         speed = 5;
+
+        flipped = false;
 
         id = nextID;
         nextID++;
@@ -65,6 +68,8 @@ public class Hero {
         tx.translate(0, -getPic().getHeight(null));
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         setPic(op.filter(getPic(), null));
+
+        flipped = !flipped;
     }
 
 
@@ -218,6 +223,12 @@ public class Hero {
     public void setY(int newY){
         setLoc(new Point( (int)loc.getX(), newY)  );
     }
+
+    /**
+     * @return whether or not the pic has been flipped
+     *         (i.e. whether or not the pic orientation matches dir)
+     */
+    public boolean isFlipped() {return flipped;}
 
 
 }

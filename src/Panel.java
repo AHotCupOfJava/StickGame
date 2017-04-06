@@ -19,13 +19,14 @@ public class Panel extends JPanel {
     private Pillar pillar1, pillar2;
     private Background background;
     private Cherries cherry;
+    private HeroPic skin;
 
     private Timer timer;
     private ArrayList<HeroPic> characters;
     private boolean start, grow, fall, walk, move, die, store, spacePressed, profit;
-    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points, money;
+    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points, money, page;
     private double stickAngle;
-    private Rectangle startButton, restartButton, storeButton, backButton;
+    private Rectangle startButton, restartButton, storeButton, backButton, left, right;
 
 
 
@@ -51,7 +52,11 @@ public class Panel extends JPanel {
         startButton = new Rectangle(110, 420, 100, 40);
         restartButton = new Rectangle(210, 400, 100, 40);
         storeButton = new Rectangle(310, 420, 100, 40);
-        backButton = new Rectangle(210, 110, 100, 40);
+        backButton = new Rectangle(210, 140, 100, 40);
+        left = new Rectangle(148, 600, 60, 30);
+        right = new Rectangle(321, 600, 60, 30);
+
+        page = 0;
 
         grow = false;
         fall = false;
@@ -64,10 +69,39 @@ public class Panel extends JPanel {
         hero = new Hero(50, 500, Hero.NORTH, "Hero.png");
         hero.setY(500 - hero.getPic().getHeight());
 
+
+        //StickHero characters
         characters = new ArrayList<HeroPic>();
-        characters.add(new HeroPic("Hero.png", 100, 250));
-        characters.add(new HeroPic("Hero3.png", 100, 500));
-        characters.add(new HeroPic("Hero4.png", 300, 250));
+        characters.add(new HeroPic("Hero.png", 130, 250, new Rectangle(115, 230, 80, 90), 2)); //1
+        characters.add(new HeroPic("Hero3.png", 130, 500, new Rectangle(115, 480, 80, 90), 2)); //2
+        characters.add(new HeroPic("Hero4.png", 330, 250, new Rectangle(315, 230, 80, 90), 2)); //3
+//        characters.add(new HeroPic("Hero5.png", 300, 500)); //4
+
+        //domesticated animals
+        characters.add(new HeroPic("Cat.png", 130, 250, new Rectangle(115, 230, 80, 90), 3));
+        characters.add(new HeroPic("Dog.png", 130, 500, new Rectangle(115, 480, 80, 90), 3));
+        characters.add(new HeroPic("Pig.png", 330, 250, new Rectangle(315, 230, 80, 90), 3));
+        characters.add(new HeroPic("Horse.png", 330, 500, new Rectangle(315, 480, 80, 90), 3));
+
+        //wild animals
+        characters.add(new HeroPic("Deer.png", 130, 250, new Rectangle(115, 230, 80, 90), 4));
+        characters.add(new HeroPic("Fox.png", 130, 500, new Rectangle(115, 480, 80, 90), 4));
+        characters.add(new HeroPic("Elephant.png", 330, 250, new Rectangle(315, 230, 80, 90), 4));
+        characters.add(new HeroPic("Giraffe.png", 330, 500, new Rectangle(315, 480, 80, 90), 4));
+
+        //disney characters
+        characters.add(new HeroPic("Mickey.png", 130, 250, new Rectangle(115, 230, 80, 90), 5));
+        characters.add(new HeroPic("Pooh.png", 130, 500, new Rectangle(115, 480, 80, 90), 5));
+        characters.add(new HeroPic("Simba.png", 330, 250, new Rectangle(315, 230, 80, 90), 5));
+        characters.add(new HeroPic("CheshireCat.png", 330, 500, new Rectangle(315, 480, 80, 90), 5));
+
+        skin = characters.get(0);
+        skin.unlock();
+        skin.setSkin(true);
+
+        hero.setPic(skin.getPic());
+        hero.setY(500 - hero.getPic().getHeight());
+
 
         stick.setX(50 + hero.getPic().getWidth());
 
@@ -88,10 +122,11 @@ public class Panel extends JPanel {
         baseY = 500;
         pillarHeight = 500;
 
-        pillar1 = new Pillar(baseX - pillarWidth1 + baseX, baseY, pillarWidth1, pillarHeight);
-        pillar2 = new Pillar(50+pillarWidth1+(int)(Math.random()*300+10), baseY, pillarWidth2, pillarHeight);
+        pillar1 = new Pillar( (int)stick.getLoc().getX() - pillarWidth1 + 5, baseY, pillarWidth1, pillarHeight );
+        pillar2 = new Pillar( 50+pillarWidth1+(int)(Math.random()*300+10), baseY, pillarWidth2, pillarHeight );
 
         cherry = new Cherries(pillar1.getX()+pillar1.getW()+(int)(Math.random()*(pillar2.getX()-pillar1.getX()-pillar1.getW())), 510, cherry.NORTH);
+
 
         addKeyListener(new KeyListener() {
             @Override
@@ -124,7 +159,7 @@ public class Panel extends JPanel {
                     repaint();
                 }
 
-                if(keyEvent.getKeyCode() == VK_UP && hero.getLoc().y > 500){
+                if(walk && keyEvent.getKeyCode() == VK_UP && hero.getLoc().y > 500){
                     hero.flip();
                     hero.setY((int)(hero.getY()-hero.getPic().getHeight()-5)); //5 = stick width
                     repaint();
@@ -132,6 +167,101 @@ public class Panel extends JPanel {
 
             }
         });
+
+
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                System.out.println(mouseEvent.getX() + ", " + mouseEvent.getY());
+
+                if(start && startButton.contains(mouseEvent.getX(), mouseEvent.getY())){
+                    start = false;
+                    store = false;
+                    grow = true;
+                    timer.start();
+                }
+
+                else if(start && storeButton.contains(mouseEvent.getX(), mouseEvent.getY())){
+                    start = false;
+                    store = true;
+                    repaint();
+                }
+
+                else if(store) {
+                    if(page == 0) {
+                        for (int i = 0; i < 3; i++) {
+                            HeroPic p = characters.get(i);
+                            if (p.clicked(mouseEvent.getX(), mouseEvent.getY())) {
+                                chosen(p);
+                            }
+                        }
+                    }
+                    else if(page == 1){
+                        for (int i = 3; i < 7; i++) {
+                            HeroPic p = characters.get(i);
+                            if (p.clicked(mouseEvent.getX(), mouseEvent.getY())) {
+                                chosen(p);
+                            }
+                        }
+                    }
+                    else if(page == 2){
+                        for (int i = 7; i < 11; i++) {
+                            HeroPic p = characters.get(i);
+                            if (p.clicked(mouseEvent.getX(), mouseEvent.getY())) {
+                                chosen(p);
+                            }
+                        }
+                    }
+                    else if(page == 3){
+                        for (int i = 11; i < 15; i++) {
+                            HeroPic p = characters.get(i);
+                            if (p.clicked(mouseEvent.getX(), mouseEvent.getY())) {
+                                chosen(p);
+                            }
+                        }
+                    }
+
+                    if (backButton.contains(mouseEvent.getX(), mouseEvent.getY())) {
+                        start = true;
+                        store = false;
+                        repaint();
+                    }
+                    else if (left.contains(mouseEvent.getX(), mouseEvent.getY()) && page > 0) {
+                        page--;
+                        repaint();
+                    }
+                    else if (right.contains(mouseEvent.getX(), mouseEvent.getY()) && page < 3) {
+                        page++;
+                        repaint();
+                    }
+                }
+
+                else if(die && hero.getY() > getHeight() && restartButton.contains(mouseEvent.getX(), mouseEvent.getY())){
+                    restart();
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+
+            }
+        });
+
 
         timer = new Timer(35, new ActionListener() {
             @Override
@@ -192,7 +322,7 @@ public class Panel extends JPanel {
                         stickAngle = -1.5;
 
                         int w = (int) (Math.random() * 130 + 30);
-                        pillar2.setX(100 - pillar2.getW());
+                        pillar2.setX( (int)stick.getLoc().getX() - pillar2.getW() + 5 );
                         pillar1 = pillar2;
                         pillar2 = new Pillar(getWidth() - baseX - w, baseY, w, pillarHeight);
                         points++;
@@ -204,7 +334,8 @@ public class Panel extends JPanel {
                     }
                 }
                 else if(die){
-                    hero.setDir(Hero.SOUTH);
+                    if(!hero.isFlipped())
+                        hero.setDir(Hero.SOUTH);
                     hero.setY((int)hero.getY() + 20);
                 }
 
@@ -212,55 +343,32 @@ public class Panel extends JPanel {
             }
         });
 
-        addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent mouseEvent) {
-                System.out.println(mouseEvent.getX() + ", " + mouseEvent.getY());
 
-                if(start && startButton.contains(mouseEvent.getX(), mouseEvent.getY())){
-                    start = false;
-                    store = false;
-                    grow = true;
-                    timer.start();
-                }
-                else if(start && storeButton.contains(mouseEvent.getX(), mouseEvent.getY())){
-                    start = false;
-                    store = true;
-                    repaint();
-                }
-                else if(store && backButton.contains(mouseEvent.getX(), mouseEvent.getY())){
-                    start = true;
-                    store = false;
-                    repaint();
-                }
-                else if(die && hero.getY() > getHeight() && restartButton.contains(mouseEvent.getX(), mouseEvent.getY())){
-                    restart();
-                    System.out.println("restart");
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent mouseEvent) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent mouseEvent) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent mouseEvent) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent mouseEvent) {
-
-            }
-        });
 
     }
+
+
+    public void chosen(HeroPic p){
+
+        skin.setSkin(false);
+
+        if (money >= p.getPrice()) {
+            money -= p.getPrice();
+            p.unlock();
+        }
+
+        p.setSkin(true);
+        skin = p;
+
+        hero.setPic(skin.getPic());
+        hero.setY(500 - hero.getPic().getHeight());
+
+        stick.setX(50 + hero.getPic().getWidth());
+        pillar1.setX( (int)stick.getLoc().getX() - pillar1.getW() + 5);
+
+        repaint();
+    }
+
 
     public void paint(Graphics g) {
         super.paintComponent(g);
@@ -312,34 +420,52 @@ public class Panel extends JPanel {
 
         }
         else if (store){
+
+
             g2.setColor(new Color(109, 207, 255));
             g2.fillRect(0, 0, getWidth(), getHeight());
 
             g2.setColor(Color.BLACK);
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 70));
             g2.drawString("STORE", 140, 100);
+
             g2.fill(backButton);
+            g2.fill(left);
+            g2.fill(right);
 
             g2.setColor(new Color(109, 207, 255));
+
+            g2.setFont(new Font("Dialog", Font.CENTER_BASELINE, 14));
+            g2.drawString("<--", 163, 620);
+            g2.drawString("-->", 336, 620);
+
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
-            g2.drawString("Back", 235, 135); //??? if 20pt font
+            g2.drawString("Back", 235, 165); //??? if 20pt font
 
-            g2.setColor(new Color(225, 225, 225));
-            g2.fillRoundRect(80, 230, 80, 90, 10, 10);
-            g2.fillRoundRect(80, 480, 80, 90, 10, 10);
-            g2.fillRoundRect(280, 230, 80, 90, 10, 10);
-            g2.fillRoundRect(280, 480, 80, 90, 10, 10);
 
-            g2.setStroke(new BasicStroke(3));
-            g2.setColor(new Color(0, 0, 0));
-            g2.drawRoundRect(80, 230, 80, 90, 10, 10);
-            g2.drawRoundRect(80, 480, 80, 90, 10, 10);
-            g2.drawRoundRect(280, 230, 80, 90, 10, 10);
-            g2.drawRoundRect(280, 480, 80, 90, 10, 10);
-
-            for (HeroPic p: characters){
-                p.draw(g2);
+            if(page == 0) {
+                for (int i = 0; i < 3; i++) {
+                    characters.get(i).draw(g2);
+                }
             }
+            else if(page == 1){
+                for (int i = 3; i < 7; i++) {
+                    characters.get(i).draw(g2);
+                }
+
+            }
+            else if(page == 2){
+                for (int i = 7; i < 11; i++) {
+                    characters.get(i).draw(g2);
+                }
+
+            }
+            else if(page == 3){
+                for (int i = 11; i < 15; i++) {
+                    characters.get(i).draw(g2);
+                }
+            }
+
 
         }
         else {
@@ -428,6 +554,8 @@ public class Panel extends JPanel {
 
         points = 0;
         profit = false;
+
+        page = 0;
 
         int random = (int)(Math.random()*2);
         if(random == 0)

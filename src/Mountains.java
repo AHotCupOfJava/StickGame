@@ -37,8 +37,12 @@ public class Mountains implements Background{
         //sky
         g2.setPaint(new GradientPaint(260, 0, sky1, 260, 400, sky2));
         g2.fillRect(0, 0, width, 400);
+
         //ground
-        g2.setColor(Color.WHITE);
+        if(day)
+            g2.setPaint(new GradientPaint(width/2, height, new Color(255, 255, 255), width/2, 400, new Color(211, 211, 211)));
+        else
+            g2.setPaint(new GradientPaint(width/2, height, new Color(178, 178, 178), width/2, 400, new Color(134, 134, 134)));
         g2.fillRect(0, 380, width, 400);
 
         //draws left mountain
