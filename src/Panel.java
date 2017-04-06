@@ -91,7 +91,7 @@ public class Panel extends JPanel {
         pillar1 = new Pillar(baseX - pillarWidth1 + baseX, baseY, pillarWidth1, pillarHeight);
         pillar2 = new Pillar(50+pillarWidth1+(int)(Math.random()*300+10), baseY, pillarWidth2, pillarHeight);
 
-        cherry = new Cherries(pillar1.getX()+pillarWidth1+(int)(Math.random()*300+10)-30, 510, cherry.NORTH);
+        cherry = new Cherries(pillar1.getX()+pillar1.getW()+(int)(Math.random()*(pillar2.getX()-pillar1.getX()-pillar1.getW())), 510, cherry.NORTH);
 
         addKeyListener(new KeyListener() {
             @Override
@@ -158,8 +158,13 @@ public class Panel extends JPanel {
                         money++;
                         cherry.setPic("transparent.png", cherry.getDir());
                     }
-                    if(hero.getLoc().x+hero.getPic().getWidth() > pillar2.getX() && (int)(hero.getY()) > 500)
+                    if(hero.getLoc().x+hero.getPic().getWidth() > pillar2.getX() && (int)(hero.getY()) > 500){
                         die = true;
+                        grow = false;
+                        fall = false;
+                        walk = false;
+                        move = false;
+                    }
                     if(hero.getX() > distance && (hero.getX() < pillar2.getX() || hero.getX() > pillar2.getX() + pillar2.getW() )){
                         die = true;
                         grow = false;
@@ -192,7 +197,7 @@ public class Panel extends JPanel {
                         pillar2 = new Pillar(getWidth() - baseX - w, baseY, w, pillarHeight);
                         points++;
                         cherry.setPic("cherries.png", cherry.getDir());
-                        int random = (int)(Math.random()*(pillar2.getX()-pillar1.getX()-pillar1.getW())+pillar1.getX()+pillar1.getW());
+                        int random = pillar1.getX()+pillar1.getW()+(int)(Math.random()*(pillar2.getX()-pillar1.getX()-pillar1.getW()));
                         if(random+20 > pillar2.getX())
                             random-=20;
                         cherry.setX(random);
@@ -443,7 +448,7 @@ public class Panel extends JPanel {
         pillar1 = new Pillar(baseX - pillarWidth1 + baseX, baseY, pillarWidth1, pillarHeight);
         pillar2 = new Pillar(50+pillarWidth1+(int)(Math.random()*300+10), baseY, pillarWidth2, pillarHeight);
 
-        cherry = new Cherries(pillar1.getX()+pillarWidth1+(int)(Math.random()*300+10)-30, 510, cherry.NORTH);
+        cherry = new Cherries(pillar1.getX()+pillar1.getW()+(int)(Math.random()*(pillar2.getX()-pillar1.getX()-pillar1.getW())), 510, cherry.NORTH);
 
         timer.restart();
     }
