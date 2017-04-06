@@ -68,7 +68,6 @@ public class Panel extends JPanel {
         characters.add(new HeroPic("Hero.png", 100, 250));
         characters.add(new HeroPic("Hero3.png", 100, 500));
         characters.add(new HeroPic("Hero4.png", 300, 250));
-        characters.add(new HeroPic("Hero5.png", 300, 500));
 
         stick.setX(50 + hero.getPic().getWidth());
 
@@ -319,6 +318,19 @@ public class Panel extends JPanel {
             g2.setColor(new Color(109, 207, 255));
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
             g2.drawString("Back", 235, 135); //??? if 20pt font
+
+            g2.setColor(new Color(225, 225, 225));
+            g2.fillRoundRect(80, 230, 80, 90, 10, 10);
+            g2.fillRoundRect(80, 480, 80, 90, 10, 10);
+            g2.fillRoundRect(280, 230, 80, 90, 10, 10);
+            g2.fillRoundRect(280, 480, 80, 90, 10, 10);
+
+            g2.setStroke(new BasicStroke(3));
+            g2.setColor(new Color(0, 0, 0));
+            g2.drawRoundRect(80, 230, 80, 90, 10, 10);
+            g2.drawRoundRect(80, 480, 80, 90, 10, 10);
+            g2.drawRoundRect(280, 230, 80, 90, 10, 10);
+            g2.drawRoundRect(280, 480, 80, 90, 10, 10);
 
             for (HeroPic p: characters){
                 p.draw(g2);
