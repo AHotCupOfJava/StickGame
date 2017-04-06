@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
@@ -12,16 +13,19 @@ import static java.awt.event.KeyEvent.VK_UP;
 
 public class Panel extends JPanel {
 
+
     private Stick stick;
     private Hero hero;
     private Pillar pillar1, pillar2;
     private Background background;
+    private Cherries cherry;
+
     private Timer timer;
+    private ArrayList<HeroPic> characters;
     private boolean start, grow, fall, walk, move, die, store, spacePressed, profit;
     private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points, money;
     private double stickAngle;
     private Rectangle startButton, restartButton, storeButton, backButton;
-    private Cherries cherry;
 
 
 
@@ -59,6 +63,12 @@ public class Panel extends JPanel {
 
         hero = new Hero(50, 500, Hero.NORTH, "Hero.png");
         hero.setY(500 - hero.getPic().getHeight());
+
+        characters = new ArrayList<HeroPic>();
+        characters.add(new HeroPic("Hero.png", 100, 250));
+        characters.add(new HeroPic("Hero3.png", 100, 500));
+        characters.add(new HeroPic("Hero4.png", 300, 250));
+        characters.add(new HeroPic("Hero5.png", 300, 500));
 
         stick.setX(50 + hero.getPic().getWidth());
 
@@ -212,13 +222,11 @@ public class Panel extends JPanel {
                 else if(start && storeButton.contains(mouseEvent.getX(), mouseEvent.getY())){
                     start = false;
                     store = true;
-//                    timer.start();
                     repaint();
                 }
                 else if(store && backButton.contains(mouseEvent.getX(), mouseEvent.getY())){
                     start = true;
                     store = false;
-//                    timer.stop();
                     repaint();
                 }
                 else if(die && hero.getY() > getHeight() && restartButton.contains(mouseEvent.getX(), mouseEvent.getY())){
@@ -297,6 +305,7 @@ public class Panel extends JPanel {
             pillar2.draw(g2);
 
             hero.draw(g2);
+
         }
         else if (store){
             g2.setColor(new Color(109, 207, 255));
@@ -310,6 +319,10 @@ public class Panel extends JPanel {
             g2.setColor(new Color(109, 207, 255));
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
             g2.drawString("Back", 235, 135); //??? if 20pt font
+
+            for (HeroPic p: characters){
+                p.draw(g2);
+            }
 
         }
         else {
