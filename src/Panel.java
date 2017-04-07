@@ -24,9 +24,9 @@ public class Panel extends JPanel {
     private Timer timer;
     private ArrayList<HeroPic> characters;
     private boolean start, grow, fall, walk, move, die, store, spacePressed, profit;
-    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points, money, page;
+    private int pillarWidth1, pillarWidth2, pillarHeight, baseX, baseY, points, highscore, money, page;
     private double stickAngle;
-    private Rectangle startButton, restartButton, storeButton, backButton, left, right;
+    private Rectangle startButton, storeButton, backButton, left, right;
 
 
 
@@ -50,7 +50,6 @@ public class Panel extends JPanel {
         store = false;
 
         startButton = new Rectangle(110, 420, 100, 40);
-        restartButton = new Rectangle(210, 400, 100, 40);
         storeButton = new Rectangle(310, 420, 100, 40);
         backButton = new Rectangle(210, 140, 100, 40);
         left = new Rectangle(148, 600, 60, 30);
@@ -108,6 +107,7 @@ public class Panel extends JPanel {
         stickAngle = -1.5;
 
         points = 0;
+        highscore = 0;
 
         money = 0;
         profit = false;
@@ -153,16 +153,20 @@ public class Panel extends JPanel {
                     fall = true;
                     repaint();
                 }
+
                 if(walk && keyEvent.getKeyCode() == VK_DOWN){
                     hero.flip();
                     hero.setY((int)(hero.getY()+hero.getPic().getHeight()+5)); //5 = stick width
                     repaint();
                 }
-
                 if(walk && keyEvent.getKeyCode() == VK_UP && hero.getLoc().y > 500){
                     hero.flip();
                     hero.setY((int)(hero.getY()-hero.getPic().getHeight()-5)); //5 = stick width
                     repaint();
+                }
+
+                if(die && hero.getY() > getHeight() && keyEvent.getKeyCode() == 32){
+                    restart();
                 }
 
             }
@@ -236,9 +240,6 @@ public class Panel extends JPanel {
                     }
                 }
 
-                else if(die && hero.getY() > getHeight() && restartButton.contains(mouseEvent.getX(), mouseEvent.getY())){
-                    restart();
-                }
             }
 
             @Override
@@ -402,6 +403,8 @@ public class Panel extends JPanel {
 
             g2.setFont(new Font("Dialog", Font.BOLD, 20));
             g2.drawString("INSTRUCTIONS", 185, 140);
+            g2.drawString("HIGH SCORE: " + highscore, 182, 350);
+
             g2.setFont(new Font("Dialog", Font.PLAIN, 16));
             g2.drawString("Hold space to stretch out the stick.", 125, 170);
             g2.drawString("Press the up and down arrow keys to flip sides on the stick.", 32, 200);
@@ -428,6 +431,9 @@ public class Panel extends JPanel {
             g2.setColor(Color.BLACK);
             g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 70));
             g2.drawString("STORE", 140, 100);
+
+            g2.setFont(new Font("Dialog", Font.PLAIN, 20));
+            g2.drawString("Cherries: " + money, 10, 30);
 
             g2.fill(backButton);
             g2.fill(left);
@@ -519,11 +525,12 @@ public class Panel extends JPanel {
                 g2.setColor(Color.BLACK);
                 g2.setFont(new Font("Copperplate", Font.PLAIN, 60));
                 g2.drawString("You died.", 123, getHeight() / 2);
-                g2.fill(restartButton);
 
-                g2.setColor(new Color(255, 0, 0));
+                g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 40));
+                g2.drawString("Score: " + points, 170, 425);
+
                 g2.setFont(new Font("Copperplate", Font.CENTER_BASELINE, 20));
-                g2.drawString("Restart", 217, 425); //??? if 20pt font
+                g2.drawString("Press the spacebar to restart.", 98, 475); //??? if 20pt font
 
                 timer.stop();
             }
@@ -552,6 +559,8 @@ public class Panel extends JPanel {
 
         stickAngle = -1.5;
 
+        if(points > highscore)
+            highscore = points;
         points = 0;
         profit = false;
 
