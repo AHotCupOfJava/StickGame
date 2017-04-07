@@ -151,7 +151,6 @@ public class Panel extends JPanel {
                     grow = false;
                     spacePressed = false;
                     fall = true;
-                    repaint();
                 }
 
                 if(walk && keyEvent.getKeyCode() == VK_DOWN){
@@ -228,16 +227,14 @@ public class Panel extends JPanel {
                     if (backButton.contains(mouseEvent.getX(), mouseEvent.getY())) {
                         start = true;
                         store = false;
-                        repaint();
                     }
                     else if (left.contains(mouseEvent.getX(), mouseEvent.getY()) && page > 0) {
                         page--;
-                        repaint();
                     }
                     else if (right.contains(mouseEvent.getX(), mouseEvent.getY()) && page < 3) {
                         page++;
-                        repaint();
                     }
+                    repaint();
                 }
 
             }
@@ -351,23 +348,26 @@ public class Panel extends JPanel {
 
     public void chosen(HeroPic p){
 
-        skin.setSkin(false);
+        if (!p.isLocked()) {
+            skin.setSkin(false);
+            skin = p;
+            p.setSkin(true);
 
-        if (money >= p.getPrice()) {
+            hero.setPic(skin.getPic());
+            hero.setY(500 - hero.getPic().getHeight());
+
+
+        } else if (money >= p.getPrice()) {
+            skin.setSkin(false);
             money -= p.getPrice();
             p.unlock();
+            p.setSkin(true);
+            skin = p;
+
+            hero.setPic(skin.getPic());
+            hero.setY(500 - hero.getPic().getHeight());
+
         }
-
-        p.setSkin(true);
-        skin = p;
-
-        hero.setPic(skin.getPic());
-        hero.setY(500 - hero.getPic().getHeight());
-
-        stick.setX(50 + hero.getPic().getWidth());
-        pillar1.setX( (int)stick.getLoc().getX() - pillar1.getW() + 5);
-
-        repaint();
     }
 
 
@@ -553,6 +553,7 @@ public class Panel extends JPanel {
         spacePressed = false;
 
         hero = new Hero(50, 500, Hero.NORTH, "Hero.png");
+        hero.setPic(skin.getPic());
         hero.setY(500 - hero.getPic().getHeight());
 
         stick.setX(50 + hero.getPic().getWidth());
